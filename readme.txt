@@ -1,7 +1,7 @@
 === PayRevive ===
 Contributors: pronob1010
 Tags: woocommerce, payment, recovery, whatsapp, reminder
-Requires at least: 5.0
+Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 1.0.0
