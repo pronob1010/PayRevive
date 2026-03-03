@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: PayRevive
- * Plugin URI:  #
+ * Plugin URI:  https://github.com/pronob1010/PayRevive
  * Description: WooCommerce Smart Payment Recovery + WhatsApp Reminder.
  * Version:     1.0.0
  * Author:      Pronob Mozumder
@@ -10,7 +10,7 @@
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * WC requires at least: 5.0
- * WC tested up to: 8.0
+ * WC tested up to: 8.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

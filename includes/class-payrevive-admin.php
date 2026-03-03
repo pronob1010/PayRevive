@@ -50,19 +50,27 @@ class PayRevive_Admin {
 			header( 'Content-Type: text/csv' );
 			header( 'Content-Disposition: attachment; filename="payrevive-recovery-stats.csv"' );
 
+			// Use PHP output stream directly for CSV export as it's a specific download action
 			$output = fopen( 'php://output', 'w' );
-			fputcsv( $output, array( 'Date', 'Type', 'Amount', 'Order ID' ) );
-
-			foreach ( $history as $item ) {
+			if ( $output ) {
 				fputcsv( $output, array(
-					date( 'Y-m-d H:i:s', $item['time'] ),
-					ucfirst( $item['type'] ),
-					$item['amount'],
-					$item['order_id'],
+					esc_html__( 'Date', 'payrevive' ),
+					esc_html__( 'Type', 'payrevive' ),
+					esc_html__( 'Amount', 'payrevive' ),
+					esc_html__( 'Order ID', 'payrevive' ),
 				) );
-			}
 
-			fclose( $output );
+				foreach ( $history as $item ) {
+					fputcsv( $output, array(
+						gmdate( 'Y-m-d H:i:s', $item['time'] ),
+						ucfirst( $item['type'] ),
+						$item['amount'],
+						$item['order_id'],
+					) );
+				}
+
+				fclose( $output );
+			}
 			exit;
 		}
 	}
@@ -187,14 +195,14 @@ class PayRevive_Admin {
 
 		// Group by last 7 days
 		for ( $i = 6; $i >= 0; $i-- ) {
-			$date = date( 'Y-m-d', strtotime( "-$i days" ) );
-			$chart_labels[] = date( 'M d', strtotime( $date ) );
+			$date = gmdate( 'Y-m-d', strtotime( "-$i days" ) );
+			$chart_labels[] = gmdate( 'M d', strtotime( $date ) );
 			
 			$failed_today = 0;
 			$recovered_today = 0;
 
 			foreach ( $history as $item ) {
-				if ( date( 'Y-m-d', $item['time'] ) === $date ) {
+				if ( gmdate( 'Y-m-d', $item['time'] ) === $date ) {
 					if ( $item['type'] === 'failed' ) {
 						$failed_today++;
 					} else {
@@ -210,35 +218,35 @@ class PayRevive_Admin {
 			<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-4 border-b border-gray-200">
 				<div>
 					<h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-500 m-0 leading-tight tracking-tight">
-						<?php _e( 'PayRevive Dashboard', 'payrevive' ); ?>
+						<?php esc_html_e( 'PayRevive Dashboard', 'payrevive' ); ?>
 					</h1>
-					<p class="text-gray-500 mt-1"><?php _e( 'Recovery performance and insights.', 'payrevive' ); ?></p>
+					<p class="text-gray-500 mt-1"><?php esc_html_e( 'Recovery performance and insights.', 'payrevive' ); ?></p>
 				</div>
 				<div class="flex space-x-3 mt-4 md:mt-0">
 					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'action', 'export_csv' ), 'payrevive_export_csv' ) ); ?>" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors focus:outline-none">
-						<span class="dashicons dashicons-download mr-2 text-gray-400"></span> <?php _e( 'Export Stats', 'payrevive' ); ?>
+						<span class="dashicons dashicons-download mr-2 text-gray-400"></span> <?php esc_html_e( 'Export Stats', 'payrevive' ); ?>
 					</a>
-					<a href="<?php echo admin_url( 'admin.php?page=payrevive-settings' ); ?>" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors focus:outline-none">
-						<span class="dashicons dashicons-admin-generic mr-2"></span> <?php _e( 'Settings', 'payrevive' ); ?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=payrevive-settings' ) ); ?>" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors focus:outline-none">
+						<span class="dashicons dashicons-admin-generic mr-2"></span> <?php esc_html_e( 'Settings', 'payrevive' ); ?>
 					</a>
 				</div>
 			</div>
 
 			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
 				<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-transform hover:scale-[1.02]">
-					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php _e( 'Total Failed', 'payrevive' ); ?></h3>
+					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php esc_html_e( 'Total Failed', 'payrevive' ); ?></h3>
 					<div class="text-3xl font-bold text-gray-900"><?php echo esc_html( $failed_count ); ?></div>
 				</div>
 				<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-transform hover:scale-[1.02]">
-					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php _e( 'Recovered', 'payrevive' ); ?></h3>
+					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php esc_html_e( 'Recovered', 'payrevive' ); ?></h3>
 					<div class="text-3xl font-bold text-green-600"><?php echo esc_html( $recovered_count ); ?></div>
 				</div>
 				<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-transform hover:scale-[1.02]">
-					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php _e( 'Recovery Rate', 'payrevive' ); ?></h3>
+					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php esc_html_e( 'Recovery Rate', 'payrevive' ); ?></h3>
 					<div class="text-3xl font-bold text-blue-600"><?php echo esc_html( $recovery_rate ); ?>%</div>
 				</div>
 				<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-transform hover:scale-[1.02]">
-					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php _e( 'Revenue Saved', 'payrevive' ); ?></h3>
+					<h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php esc_html_e( 'Revenue Saved', 'payrevive' ); ?></h3>
 					<div class="text-3xl font-bold text-emerald-600"><?php echo wp_kses_post( wc_price( $stats['recovered_revenue'] ) ); ?></div>
 				</div>
 			</div>
@@ -246,7 +254,7 @@ class PayRevive_Admin {
 			<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 				<div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 					<h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-						<span class="dashicons dashicons-chart-line mr-2 text-blue-500"></span> <?php _e( 'Recovery Trends', 'payrevive' ); ?>
+						<span class="dashicons dashicons-chart-line mr-2 text-blue-500"></span> <?php esc_html_e( 'Recovery Trends', 'payrevive' ); ?>
 					</h2>
 					<div class="h-[300px] relative">
 						<canvas id="payrevive-trends-chart"></canvas>
@@ -255,7 +263,7 @@ class PayRevive_Admin {
 
 				<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 					<h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-						<span class="dashicons dashicons-list-view mr-2 text-blue-500"></span> <?php _e( 'Recent Activity', 'payrevive' ); ?>
+						<span class="dashicons dashicons-list-view mr-2 text-blue-500"></span> <?php esc_html_e( 'Recent Activity', 'payrevive' ); ?>
 					</h2>
 					<ul class="space-y-4 m-0 p-0 list-none">
 						<?php
@@ -270,7 +278,10 @@ class PayRevive_Admin {
 										<?php echo esc_html( ucfirst( $item['type'] ) ); ?>
 									</strong>
 									<span class="block text-xs text-gray-400 mt-1">
-										<?php printf( esc_html__( 'Order #%s - %s', 'payrevive' ), esc_html( $item['order_id'] ), wp_kses_post( wc_price( $item['amount'] ) ) ); ?>
+										<?php
+										/* translators: 1: order ID, 2: formatted order total */
+										printf( esc_html__( 'Order #%1$s - %2$s', 'payrevive' ), esc_html( $item['order_id'] ), wp_kses_post( wc_price( $item['amount'] ) ) );
+										?>
 									</span>
 								</div>
 								<span class="text-xs text-gray-400">
@@ -291,14 +302,14 @@ class PayRevive_Admin {
 							data: {
 								labels: <?php echo json_encode( $chart_labels ); ?>,
 								datasets: [{
-									label: '<?php _e( 'Failed', 'payrevive' ); ?>',
+									label: '<?php esc_html_e( 'Failed', 'payrevive' ); ?>',
 									data: <?php echo json_encode( $chart_failed ); ?>,
 									borderColor: '#d63638',
 									backgroundColor: 'rgba(214, 54, 56, 0.1)',
 									fill: true,
 									tension: 0.4
 								}, {
-									label: '<?php _e( 'Recovered', 'payrevive' ); ?>',
+									label: '<?php esc_html_e( 'Recovered', 'payrevive' ); ?>',
 									data: <?php echo json_encode( $chart_recovered ); ?>,
 									borderColor: '#008a20',
 									backgroundColor: 'rgba(0, 138, 32, 0.1)',
@@ -338,12 +349,12 @@ class PayRevive_Admin {
 			<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-4 border-b border-gray-200">
 				<div>
 					<h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-500 m-0 leading-tight tracking-tight">
-						<?php _e( 'PayRevive Settings', 'payrevive' ); ?>
+						<?php esc_html_e( 'PayRevive Settings', 'payrevive' ); ?>
 					</h1>
-					<p class="text-gray-500 mt-1"><?php _e( 'Configure your payment recovery rules and notifications.', 'payrevive' ); ?></p>
+					<p class="text-gray-500 mt-1"><?php esc_html_e( 'Configure your payment recovery rules and notifications.', 'payrevive' ); ?></p>
 				</div>
-				<a href="<?php echo admin_url( 'admin.php?page=payrevive' ); ?>" class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors focus:outline-none">
-					<span class="dashicons dashicons-dashboard mr-2 text-gray-400"></span> <?php _e( 'Back to Dashboard', 'payrevive' ); ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=payrevive' ) ); ?>" class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors focus:outline-none">
+					<span class="dashicons dashicons-dashboard mr-2 text-gray-400"></span> <?php esc_html_e( 'Back to Dashboard', 'payrevive' ); ?>
 				</a>
 			</div>
 
@@ -352,13 +363,13 @@ class PayRevive_Admin {
 				
 				<div class="flex p-1 space-x-1 bg-gray-100 rounded-xl max-w-md">
 					<button type="button" class="payrevive-tab-link w-full py-2.5 text-sm font-medium leading-5 rounded-lg focus:outline-none transition-all duration-200 active" data-tab="tab-retry">
-						<?php _e( 'Retry Logic', 'payrevive' ); ?>
+						<?php esc_html_e( 'Retry Logic', 'payrevive' ); ?>
 					</button>
 					<button type="button" class="payrevive-tab-link w-full py-2.5 text-sm font-medium leading-5 rounded-lg focus:outline-none transition-all duration-200" data-tab="tab-email">
-						<?php _e( 'Email Template', 'payrevive' ); ?>
+						<?php esc_html_e( 'Email Template', 'payrevive' ); ?>
 					</button>
 					<button type="button" class="payrevive-tab-link w-full py-2.5 text-sm font-medium leading-5 rounded-lg focus:outline-none transition-all duration-200" data-tab="tab-whatsapp">
-						<?php _e( 'WhatsApp', 'payrevive' ); ?>
+						<?php esc_html_e( 'WhatsApp', 'payrevive' ); ?>
 					</button>
 				</div>
 
@@ -366,30 +377,30 @@ class PayRevive_Admin {
 				<div id="tab-retry" class="payrevive-tab-content block">
 					<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 						<h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center border-b pb-4">
-							<span class="dashicons dashicons-update mr-2 text-blue-500"></span> <?php _e( 'Retry Logic & Intervals', 'payrevive' ); ?>
+							<span class="dashicons dashicons-update mr-2 text-blue-500"></span> <?php esc_html_e( 'Retry Logic & Intervals', 'payrevive' ); ?>
 						</h2>
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 							<div class="space-y-4">
-								<label class="block text-sm font-bold text-gray-700"><?php _e( 'Retry Attempts', 'payrevive' ); ?></label>
+								<label class="block text-sm font-bold text-gray-700"><?php esc_html_e( 'Retry Attempts', 'payrevive' ); ?></label>
 								<input type="number" name="payrevive_settings[retry_attempts]" value="<?php echo esc_attr( $settings['retry_attempts'] ); ?>" min="1" max="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
-								<p class="text-xs text-gray-400"><?php _e( 'How many recovery attempts to make for each failed payment.', 'payrevive' ); ?></p>
+								<p class="text-xs text-gray-400"><?php esc_html_e( 'How many recovery attempts to make for each failed payment.', 'payrevive' ); ?></p>
 							</div>
 							<div class="space-y-4">
-								<label class="block text-sm font-bold text-gray-700"><?php _e( 'Base Interval (Hours)', 'payrevive' ); ?></label>
+								<label class="block text-sm font-bold text-gray-700"><?php esc_html_e( 'Base Interval (Hours)', 'payrevive' ); ?></label>
 								<input type="number" name="payrevive_settings[retry_interval]" value="<?php echo esc_attr( $settings['retry_interval'] ); ?>" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
-								<p class="text-xs text-gray-400"><?php _e( 'Delay before the first recovery notification.', 'payrevive' ); ?></p>
+								<p class="text-xs text-gray-400"><?php esc_html_e( 'Delay before the first recovery notification.', 'payrevive' ); ?></p>
 							</div>
 							<div class="md:col-span-2 flex items-center p-4 bg-blue-50 rounded-lg">
 								<input type="checkbox" name="payrevive_settings[smart_retry_enabled]" id="smart_retry_enabled" value="yes" <?php checked( $settings['smart_retry_enabled'], 'yes' ); ?> class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
 								<div class="ml-3">
-									<label for="smart_retry_enabled" class="font-medium text-blue-900"><?php _e( 'Enable Smart Backoff', 'payrevive' ); ?></label>
-									<p class="text-sm text-blue-700"><?php _e( 'Increase interval exponentially after each failed attempt to avoid overwhelming customers.', 'payrevive' ); ?></p>
+									<label for="smart_retry_enabled" class="font-medium text-blue-900"><?php esc_html_e( 'Enable Smart Backoff', 'payrevive' ); ?></label>
+									<p class="text-sm text-blue-700"><?php esc_html_e( 'Increase interval exponentially after each failed attempt to avoid overwhelming customers.', 'payrevive' ); ?></p>
 								</div>
 							</div>
 							<div class="space-y-4">
-								<label class="block text-sm font-bold text-gray-700"><?php _e( 'Backoff Multiplier', 'payrevive' ); ?></label>
+								<label class="block text-sm font-bold text-gray-700"><?php esc_html_e( 'Backoff Multiplier', 'payrevive' ); ?></label>
 								<input type="number" name="payrevive_settings[smart_retry_interval]" value="<?php echo esc_attr( $settings['smart_retry_interval'] ); ?>" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
-								<p class="text-xs text-gray-400"><?php _e( 'Example: Multiplier 2 with 24h base = 24h, 48h, 96h...', 'payrevive' ); ?></p>
+								<p class="text-xs text-gray-400"><?php esc_html_e( 'Example: Multiplier 2 with 24h base = 24h, 48h, 96h...', 'payrevive' ); ?></p>
 							</div>
 						</div>
 					</div>
@@ -399,20 +410,20 @@ class PayRevive_Admin {
 				<div id="tab-email" class="payrevive-tab-content hidden">
 					<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 						<h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center border-b pb-4">
-							<span class="dashicons dashicons-email mr-2 text-blue-500"></span> <?php _e( 'Email Notification Settings', 'payrevive' ); ?>
+							<span class="dashicons dashicons-email mr-2 text-blue-500"></span> <?php esc_html_e( 'Email Notification Settings', 'payrevive' ); ?>
 						</h2>
 						<div class="space-y-6">
 							<div class="flex items-center p-4 bg-gray-50 rounded-lg">
 								<input type="checkbox" name="payrevive_settings[email_enabled]" id="email_enabled" value="yes" <?php checked( $settings['email_enabled'], 'yes' ); ?> class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-								<label for="email_enabled" class="ml-3 font-medium text-gray-700"><?php _e( 'Enable Email Reminders', 'payrevive' ); ?></label>
+								<label for="email_enabled" class="ml-3 font-medium text-gray-700"><?php esc_html_e( 'Enable Email Reminders', 'payrevive' ); ?></label>
 							</div>
 							<div class="grid grid-cols-1 gap-6">
 								<div>
-									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'Email Subject', 'payrevive' ); ?></label>
+									<label class="block text-sm font-bold text-gray-700 mb-1"><?php esc_html_e( 'Email Subject', 'payrevive' ); ?></label>
 									<input type="text" name="payrevive_settings[email_subject]" value="<?php echo esc_attr( $email_subject ); ?>" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
 								</div>
 								<div>
-									<label class="block text-sm font-bold text-gray-700 mb-2"><?php _e( 'Email Body', 'payrevive' ); ?></label>
+									<label class="block text-sm font-bold text-gray-700 mb-2"><?php esc_html_e( 'Email Body', 'payrevive' ); ?></label>
 									<div class="payrevive-editor-container">
 										<?php 
 										wp_editor( $email_body, 'payrevive_email_body', array(
@@ -426,7 +437,7 @@ class PayRevive_Admin {
 										) );
 										?>
 									</div>
-									<p class="text-xs text-gray-400 mt-2"><?php _e( 'Available tags: {order_number}, {customer_name}, {checkout_url}', 'payrevive' ); ?></p>
+									<p class="text-xs text-gray-400 mt-2"><?php esc_html_e( 'Available tags: {order_number}, {customer_name}, {checkout_url}', 'payrevive' ); ?></p>
 								</div>
 							</div>
 						</div>
@@ -437,22 +448,22 @@ class PayRevive_Admin {
 				<div id="tab-whatsapp" class="payrevive-tab-content hidden">
 					<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 						<h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center border-b pb-4">
-							<span class="dashicons dashicons-whatsapp mr-2 text-green-500"></span> <?php _e( 'WhatsApp Notification Settings', 'payrevive' ); ?>
+							<span class="dashicons dashicons-whatsapp mr-2 text-green-500"></span> <?php esc_html_e( 'WhatsApp Notification Settings', 'payrevive' ); ?>
 						</h2>
 						<div class="space-y-6">
 							<div class="flex items-center p-4 bg-gray-50 rounded-lg">
 								<input type="checkbox" name="payrevive_settings[whatsapp_enabled]" id="whatsapp_enabled" value="yes" <?php checked( $settings['whatsapp_enabled'], 'yes' ); ?> class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" />
-								<label for="whatsapp_enabled" class="ml-3 font-medium text-gray-700"><?php _e( 'Enable WhatsApp Reminders', 'payrevive' ); ?></label>
+								<label for="whatsapp_enabled" class="ml-3 font-medium text-gray-700"><?php esc_html_e( 'Enable WhatsApp Reminders', 'payrevive' ); ?></label>
 							</div>
 							<div class="grid grid-cols-1 gap-6">
 								<div>
-									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'WhatsApp API Key (Cloud API / Twilio)', 'payrevive' ); ?></label>
+									<label class="block text-sm font-bold text-gray-700 mb-1"><?php esc_html_e( 'WhatsApp API Key (Cloud API / Twilio)', 'payrevive' ); ?></label>
 									<input type="password" name="payrevive_settings[whatsapp_api_key]" value="<?php echo esc_attr( $settings['whatsapp_api_key'] ); ?>" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
 								</div>
 								<div>
-									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'WhatsApp Message Template', 'payrevive' ); ?></label>
+									<label class="block text-sm font-bold text-gray-700 mb-1"><?php esc_html_e( 'WhatsApp Message Template', 'payrevive' ); ?></label>
 									<textarea name="payrevive_settings[whatsapp_message]" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $whatsapp_message ); ?></textarea>
-									<p class="text-xs text-gray-400 mt-2"><?php _e( 'Available tags: {order_number}, {checkout_url}', 'payrevive' ); ?></p>
+									<p class="text-xs text-gray-400 mt-2"><?php esc_html_e( 'Available tags: {order_number}, {checkout_url}', 'payrevive' ); ?></p>
 								</div>
 							</div>
 						</div>
@@ -462,7 +473,7 @@ class PayRevive_Admin {
 				<div class="pt-5 border-t border-gray-200">
 					<div class="flex justify-end">
 						<button type="submit" name="submit" id="submit" class="ml-3 inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-							<?php _e( 'Save Settings', 'payrevive' ); ?>
+							<?php esc_html_e( 'Save Settings', 'payrevive' ); ?>
 						</button>
 					</div>
 				</div>

@@ -111,7 +111,8 @@ class PayRevive_Payment_Recovery {
 				if ( $subscription->get_payment_method() === 'stripe' ) {
 					// In a real scenario, we could check Stripe token status here.
 					// For v1/v2, we'll log that it's a subscription recovery.
-					$order->add_order_note( sprintf( __( 'PayRevive: Subscription recovery for Order #%s.', 'payrevive' ), $order->get_order_number() ) );
+					/* translators: %s: order number */
+					$order->add_order_note( sprintf( __( 'PayRevive: Subscription recovery for Order #%1$s.', 'payrevive' ), $order->get_order_number() ) );
 				}
 			}
 		}
@@ -123,7 +124,8 @@ class PayRevive_Payment_Recovery {
 		if ( $retry_count < $max_retries ) {
 			$retry_count++;
 			$order->update_meta_data( '_payrevive_retry_count', $retry_count );
-			$order->add_order_note( sprintf( __( 'PayRevive: Automated retry attempt %d of %d.', 'payrevive' ), $retry_count, $max_retries ) );
+			/* translators: 1: retry count, 2: max retries */
+			$order->add_order_note( sprintf( __( 'PayRevive: Automated retry attempt %1$d of %2$d.', 'payrevive' ), $retry_count, $max_retries ) );
 			$order->save();
 
 			// For most gateways, we can't just "charge" again without a token.
