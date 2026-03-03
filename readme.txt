@@ -1,5 +1,5 @@
 === PayRevive ===
-Contributors: pronobmozumder
+Contributors: pronob1010
 Tags: woocommerce, payment, recovery, whatsapp, reminder
 Requires at least: 5.0
 Tested up to: 6.4
@@ -30,7 +30,10 @@ PayRevive is a smart payment recovery solution for WooCommerce that helps you re
 == Screenshots ==
 
 1. Dashboard showing recovery stats and trends.
+![Dashboard Preview](assets/image/dashboard-placeholder.jpg)
+
 2. Settings page for retry logic and notification templates.
+![Settings Preview](assets/image/settings-placeholder.jpg)
 
 == Changelog ==
 
