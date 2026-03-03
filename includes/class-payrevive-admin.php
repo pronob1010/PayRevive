@@ -328,6 +328,11 @@ class PayRevive_Admin {
 	 */
 	public function render_settings() {
 		$settings = get_option( 'payrevive_settings' );
+		
+		// Fallbacks for display
+		$email_subject = ! empty( $settings['email_subject'] ) ? $settings['email_subject'] : __( 'Action Required: Your payment for order #{order_number} failed', 'payrevive' );
+		$email_body = ! empty( $settings['email_body'] ) ? $settings['email_body'] : __( "Hi {customer_name},\n\nWe noticed that your payment for order #{order_number} didn't go through. Don't worry, your items are still reserved for you!\n\nYou can easily complete your purchase by clicking the secure checkout link below:\n\n{checkout_url}\n\nIf you have any questions or need assistance, feel free to reply to this email.\n\nBest regards,\nThe Team", 'payrevive' );
+		$whatsapp_message = ! empty( $settings['whatsapp_message'] ) ? $settings['whatsapp_message'] : __( "Hi {customer_name}, your payment for order #{order_number} failed. You can complete it here: {checkout_url}", 'payrevive' );
 		?>
 		<div class="wrap payrevive-admin max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 			<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-4 border-b border-gray-200">
@@ -404,11 +409,11 @@ class PayRevive_Admin {
 							<div class="grid grid-cols-1 gap-6">
 								<div>
 									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'Email Subject', 'payrevive' ); ?></label>
-									<input type="text" name="payrevive_settings[email_subject]" value="<?php echo esc_attr( $settings['email_subject'] ); ?>" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
+									<input type="text" name="payrevive_settings[email_subject]" value="<?php echo esc_attr( $email_subject ); ?>" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
 								</div>
 								<div>
 									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'Email Body', 'payrevive' ); ?></label>
-									<textarea name="payrevive_settings[email_body]" rows="8" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $settings['email_body'] ); ?></textarea>
+									<textarea name="payrevive_settings[email_body]" rows="8" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $email_body ); ?></textarea>
 									<p class="text-xs text-gray-400 mt-2"><?php _e( 'Available tags: {order_number}, {customer_name}, {checkout_url}', 'payrevive' ); ?></p>
 								</div>
 							</div>
@@ -434,7 +439,7 @@ class PayRevive_Admin {
 								</div>
 								<div>
 									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'WhatsApp Message Template', 'payrevive' ); ?></label>
-									<textarea name="payrevive_settings[whatsapp_message]" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $settings['whatsapp_message'] ); ?></textarea>
+									<textarea name="payrevive_settings[whatsapp_message]" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $whatsapp_message ); ?></textarea>
 									<p class="text-xs text-gray-400 mt-2"><?php _e( 'Available tags: {order_number}, {checkout_url}', 'payrevive' ); ?></p>
 								</div>
 							</div>

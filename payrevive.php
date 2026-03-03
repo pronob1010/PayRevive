@@ -94,9 +94,9 @@ class PayRevive {
 				'whatsapp_enabled' => 'no',
 				'smart_retry_enabled' => 'no',
 				'smart_retry_interval' => 2, // multiplier
-				'email_subject' => __( 'Action Required: Payment failed for Order #{order_number}', 'payrevive' ),
-				'email_body' => __( "Hi {customer_name},\n\nUnfortunately, your payment for order #{order_number} failed. Don't worry, your items are still reserved.\n\nYou can complete your payment by clicking the link below:\n{checkout_url}\n\nThank you!", 'payrevive' ),
-				'whatsapp_message' => __( "Your payment failed for order #{order_number}. Click here to complete: {checkout_url}", 'payrevive' ),
+				'email_subject' => __( 'Action Required: Your payment for order #{order_number} failed', 'payrevive' ),
+				'email_body' => __( "Hi {customer_name},\n\nWe noticed that your payment for order #{order_number} didn't go through. Don't worry, your items are still reserved for you!\n\nYou can easily complete your purchase by clicking the secure checkout link below:\n\n{checkout_url}\n\nIf you have any questions or need assistance, feel free to reply to this email.\n\nBest regards,\nThe Team", 'payrevive' ),
+				'whatsapp_message' => __( "Hi {customer_name}, your payment for order #{order_number} failed. You can complete it here: {checkout_url}", 'payrevive' ),
 			) );
 		}
 	}
