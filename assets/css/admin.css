@@ -1,0 +1,28 @@
+/**
+ * PayRevive Admin CSS Overrides
+ * Most styling is handled by Tailwind CSS.
+ * This file contains minor WordPress specific adjustments.
+ */
+
+/* Fix WordPress admin menu overlap with Tailwind fixed elements if any */
+@media (min-width: 782px) {
+    .payrevive-admin-sticky {
+        top: 32px;
+    }
+}
+
+/* Ensure WordPress notices don't break the layout */
+.payrevive-admin .notice, 
+.payrevive-admin .updated, 
+.payrevive-admin .error {
+    margin: 20px 0 !important;
+    border-radius: 8px;
+    border-left-width: 4px;
+}
+
+/* Custom button styles that mix with WP if needed */
+.payrevive-btn-wp {
+    padding: 6px 12px !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+}
