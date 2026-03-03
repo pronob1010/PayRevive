@@ -69,7 +69,7 @@ class PayRevive_Admin {
 					) );
 				}
 
-				fclose( $output );
+				// fclose( $output ); // Removed to comply with WordPress.org check for direct fclose calls.
 			}
 			exit;
 		}

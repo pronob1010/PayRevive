@@ -10,7 +10,7 @@
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * WC requires at least: 5.0
- * WC tested up to: 8.8
+ * WC tested up to: 8.9
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
