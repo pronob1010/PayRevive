@@ -139,7 +139,7 @@ class PayRevive_Admin {
 			$new_input['email_subject'] = sanitize_text_field( $input['email_subject'] );
 		}
 		if ( isset( $input['email_body'] ) ) {
-			$new_input['email_body'] = sanitize_textarea_field( $input['email_body'] );
+			$new_input['email_body'] = wp_kses_post( $input['email_body'] );
 		}
 		if ( isset( $input['whatsapp_message'] ) ) {
 			$new_input['whatsapp_message'] = sanitize_textarea_field( $input['whatsapp_message'] );
@@ -412,8 +412,20 @@ class PayRevive_Admin {
 									<input type="text" name="payrevive_settings[email_subject]" value="<?php echo esc_attr( $email_subject ); ?>" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" />
 								</div>
 								<div>
-									<label class="block text-sm font-bold text-gray-700 mb-1"><?php _e( 'Email Body', 'payrevive' ); ?></label>
-									<textarea name="payrevive_settings[email_body]" rows="8" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"><?php echo esc_textarea( $email_body ); ?></textarea>
+									<label class="block text-sm font-bold text-gray-700 mb-2"><?php _e( 'Email Body', 'payrevive' ); ?></label>
+									<div class="payrevive-editor-container">
+										<?php 
+										wp_editor( $email_body, 'payrevive_email_body', array(
+											'textarea_name' => 'payrevive_settings[email_body]',
+											'textarea_rows' => 12,
+											'media_buttons' => false,
+											'tinymce'       => array(
+												'toolbar1' => 'bold,italic,underline,bullist,numlist,link,unlink,forecolor,undo,redo',
+											),
+											'quicktags'     => true,
+										) );
+										?>
+									</div>
 									<p class="text-xs text-gray-400 mt-2"><?php _e( 'Available tags: {order_number}, {customer_name}, {checkout_url}', 'payrevive' ); ?></p>
 								</div>
 							</div>
@@ -469,6 +481,14 @@ class PayRevive_Admin {
 			}
 			.payrevive-tab-link:not(.active):hover {
 				color: #111827;
+			}
+			/* TinyMCE within Tailwind Container fixes */
+			.payrevive-editor-container .wp-editor-container {
+				border-radius: 0.375rem;
+				border-color: #d1d5db;
+			}
+			.payrevive-editor-container .wp-switch-editor {
+				height: auto !important;
 			}
 			/* Remove WordPress default wrap padding */
 			#wpbody-content .wrap.payrevive-admin {

@@ -71,7 +71,9 @@ class PayRevive_Notifications {
 		$subject = str_replace( array_keys( $replace ), array_values( $replace ), $subject_template );
 		$message = str_replace( array_keys( $replace ), array_values( $replace ), $body_template );
 
-		wp_mail( $to, $subject, $message );
+		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+		wp_mail( $to, $subject, $message, $headers );
 		$order->add_order_note( __( 'PayRevive: Recovery email sent to customer.', 'payrevive' ) );
 	}
 
