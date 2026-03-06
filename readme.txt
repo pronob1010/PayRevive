@@ -30,10 +30,11 @@ PayRevive is a smart payment recovery solution for WooCommerce that helps you re
 == Screenshots ==
 
 1. Dashboard showing recovery stats and trends.
-![Dashboard Preview](assets/image/dashboard-placeholder.jpg)
+![Dashboard Preview](https://github.com/pronob1010/PayRevive/blob/main/assets/image/Dashboard-%E2%80%B9-FreshSite-%E2%80%94-WordPress-03-04-2026_12_48_AM.png)
+
 
 2. Settings page for retry logic and notification templates.
-![Settings Preview](assets/image/settings-placeholder.jpg)
+![Settings Preview](https://github.com/pronob1010/PayRevive/blob/main/assets/image/Settings-%E2%80%B9-FreshSite-%E2%80%94-WordPress-03-04-2026_12_48_AM.png)
 
 == Changelog ==
 
